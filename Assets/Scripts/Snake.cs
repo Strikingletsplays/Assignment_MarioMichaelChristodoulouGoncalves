@@ -85,46 +85,47 @@ public class Snake : MonoBehaviour
         //if timer exceeds the time set, move snake, and reset more timer
         if (gridMoveTimer >= gridMoveTimerMax)
         {
-            gridPosition += gridMoveDirection;
             gridMoveTimer -= gridMoveTimerMax;
-        }
 
+            snakeMovePositionList.Insert(0, gridPosition);
 
-        snakeMovePositionList.Insert(0, gridPosition);
+            gridPosition += gridMoveDirection;
 
-        //Let the LevelGrid know that snake ate food
-        bool snakeAteFood = LevelGrid.instance.DidSnakeEatFood(gridPosition);
-        if (snakeAteFood)
-        {
-            //Snake ate some food, lets grow
-            snakeBodySize++;
-            CreateSnakeBody();
-        }
+            //Let the LevelGrid know that snake ate food
+            bool snakeAteFood = LevelGrid.instance.DidSnakeEatFood(gridPosition);
+            if (snakeAteFood)
+            {
+                //Snake ate some food, lets grow
+                snakeBodySize++;
+                CreateSnakeBody();
+            }
 
-        //Check if snakeBodySize is bigger than the snakeMocePositionList, and stop drawing snake trail. (remove last possition from the list)
-        if (snakeMovePositionList.Count >= snakeBodySize + 1)
-        {
-            snakeMovePositionList.RemoveAt(snakeMovePositionList.Count - 1);
-        }
+            //Check if snakeBodySize is bigger than the snakeMocePositionList, and stop drawing snake trail. (remove last possition from the list)
+            if (snakeMovePositionList.Count >= snakeBodySize + 1)
+            {
+                snakeMovePositionList.RemoveAt(snakeMovePositionList.Count - 1);
+            }
 
-        /*for (int i = 0; i < snakeMovePositionList.Count; i++)
-        {
-            Vector2Int snakeMovePossition = snakeMovePositionList[i];
-            spawn sprite of snakes body part (snakeMovePossition)
-            remove sprite before snake moves again
+            /*for (int i = 0; i < snakeMovePositionList.Count; i++)
+            {
+                Vector2Int snakeMovePossition = snakeMovePositionList[i];
+                spawn sprite of snakes body part (snakeMovePossition)
+                remove sprite before snake moves again
 
-        }*/
+            }*/
 
-        //Move Snake Head
-        transform.position = new Vector3(gridPosition.x, gridPosition.y);
-        transform.eulerAngles = new Vector3(0, 0, GetAngleFromVector(gridMoveDirection) - 90);
+            //Move Snake Head
+            transform.position = new Vector3(gridPosition.x, gridPosition.y);
+            transform.eulerAngles = new Vector3(0, 0, GetAngleFromVector(gridMoveDirection) - 90);
 
-        //Move Snake Body
-        UpdateSnakeBodyParts();
+            //Move Snake Body
+            UpdateSnakeBodyParts();
+        }    
     }
 
     private void CreateSnakeBody()
     {
+        //Create new gameobject body part, and add it to the list
         snakeBodyPartList.Add(new SnakeBodyPart(snakeBodyPartList.Count));
     }
     
@@ -172,7 +173,7 @@ public class Snake : MonoBehaviour
         {
             GameObject snakeBodyGameObject = new GameObject("SnakeBody", typeof(SpriteRenderer));
             snakeBodyGameObject.GetComponent<SpriteRenderer>().sprite = GameAsset.instance.snakeBodySprite;
-            snakeBodyGameObject.GetComponent<SpriteRenderer>().sortingOrder = -bodyIndex;            //Set Order of body parts (prevents visual glitch)
+            snakeBodyGameObject.GetComponent<SpriteRenderer>().sortingOrder = -bodyIndex;                           //Set Order of body parts (prevents visual glitch)
             transform = snakeBodyGameObject.transform;
         }
 
