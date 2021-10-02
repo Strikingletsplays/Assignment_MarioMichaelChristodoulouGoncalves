@@ -1,7 +1,9 @@
 Video Sample of Game: https://youtu.be/welSnze64bs
 
 External tools/assets Used: 
-LinqToCSV: Used for deserializing Food data from CSV file: more details here: https://www.codeproject.com/Articles/25133/LINQ-to-CSV-library
+LinqToCSV: Used for deserializing Food data from CSV file: more details here: 
+https://github.com/mperdeck/LINQtoCSV
+https://www.codeproject.com/Articles/25133/LINQ-to-CSV-library
 
 
 Lets start from the Game Handler. In this script we Create a 19x19 grid that defines our level boundaries and Instantiate a food object. 
