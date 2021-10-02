@@ -4,18 +4,36 @@ using UnityEngine;
 
 public class Snake : MonoBehaviour
 {
+    //Snake Instance
+    public static Snake instance;
+
     //Movement Variables
     private Vector2Int gridMoveDirection;
     private Vector2Int gridPosition;
     private float gridMoveTimer;
     private float gridMoveTimerMax;
+    private List<Vector2Int> snakeMovePositionList;
+    private List<SnakeBodyPart> snakeBodyPartList;
+
+    //Main Score
+    public int Score = 0;
+
+    //Snake Stats
+    private int snakeBodySize;
+    
+
 
     private void Awake()
     {
+        instance = this;
         gridPosition = new Vector2Int(10, 10);
-        gridMoveTimerMax = .5f;
+        gridMoveTimerMax = .3f;
         gridMoveTimer = gridMoveTimerMax;
         gridMoveDirection = new Vector2Int(1, 0);
+
+        snakeMovePositionList = new List<Vector2Int>();
+        snakeBodyPartList = new List<SnakeBodyPart>();
+        snakeBodySize = 0;
     }
 
     private void Update()
@@ -71,9 +89,53 @@ public class Snake : MonoBehaviour
             gridMoveTimer -= gridMoveTimerMax;
         }
 
-        //Move Snake
+
+        snakeMovePositionList.Insert(0, gridPosition);
+
+        //Let the LevelGrid know that snake ate food
+        bool snakeAteFood = LevelGrid.instance.DidSnakeEatFood(gridPosition);
+        if (snakeAteFood)
+        {
+            //Snake ate some food, lets grow
+            snakeBodySize++;
+            CreateSnakeBody();
+        }
+
+        //Check if snakeBodySize is bigger than the snakeMocePositionList, and stop drawing snake trail. (remove last possition from the list)
+        if (snakeMovePositionList.Count >= snakeBodySize + 1)
+        {
+            snakeMovePositionList.RemoveAt(snakeMovePositionList.Count - 1);
+        }
+
+        /*for (int i = 0; i < snakeMovePositionList.Count; i++)
+        {
+            Vector2Int snakeMovePossition = snakeMovePositionList[i];
+            spawn sprite of snakes body part (snakeMovePossition)
+            remove sprite before snake moves again
+
+        }*/
+
+        //Move Snake Head
         transform.position = new Vector3(gridPosition.x, gridPosition.y);
         transform.eulerAngles = new Vector3(0, 0, GetAngleFromVector(gridMoveDirection) - 90);
+
+        //Move Snake Body
+        UpdateSnakeBodyParts();
+    }
+
+    private void CreateSnakeBody()
+    {
+        snakeBodyPartList.Add(new SnakeBodyPart(snakeBodyPartList.Count));
+    }
+    
+
+    //FIX!!
+    private void UpdateSnakeBodyParts()
+    {
+        for (int i = 0; i < snakeBodyPartList.Count; i++)
+        {
+            snakeBodyPartList[i].SetGridPosition(snakeMovePositionList[i]);
+        }
     }
 
     private float GetAngleFromVector(Vector2Int dir)
@@ -84,5 +146,40 @@ public class Snake : MonoBehaviour
             n += 360;
         }
         return n;
+    }
+
+    public Vector2Int GetGridPosition()
+    {
+        return gridPosition;
+    }
+
+    //Return full list of positions occupied by the snake.
+    public List<Vector2Int> GetSnakeGridPositionList()
+    {
+        //Declare a new list 
+        List<Vector2Int> gridPositionList = new List<Vector2Int>() { gridPosition };
+
+        gridPositionList.AddRange(snakeMovePositionList);
+        return gridPositionList;
+    }
+
+    public class SnakeBodyPart
+    {
+        private Vector2Int gridPosition;
+        private Transform transform;
+
+        public SnakeBodyPart(int bodyIndex)
+        {
+            GameObject snakeBodyGameObject = new GameObject("SnakeBody", typeof(SpriteRenderer));
+            snakeBodyGameObject.GetComponent<SpriteRenderer>().sprite = GameAsset.instance.snakeBodySprite;
+            snakeBodyGameObject.GetComponent<SpriteRenderer>().sortingOrder = -bodyIndex;            //Set Order of body parts (prevents visual glitch)
+            transform = snakeBodyGameObject.transform;
+        }
+
+        public void SetGridPosition(Vector2Int gPosition)
+        {
+            gridPosition = gPosition;
+            transform.position = new Vector3(gridPosition.x, gridPosition.y);
+        }
     }
 }

@@ -7,12 +7,18 @@ public class GameAsset : MonoBehaviour
     //Static Instance
     public static GameAsset instance;
 
-    //Snake Parts
-    public Sprite snakeHeadSprite;
-
-
     private void Awake()
     {
         instance = this;
     }
+
+    //Snake Parts
+    public Sprite snakeHeadSprite;
+    public Sprite snakeBodySprite;
+
+    //Food Sprite
+    public Sprite foodSprite;
+
+
+    
 }
