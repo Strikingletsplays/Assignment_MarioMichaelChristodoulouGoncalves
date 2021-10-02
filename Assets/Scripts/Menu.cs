@@ -3,13 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class Menu : MonoBehaviour
 {
-    //Button's functionality
-
+    [SerializeField]
+    private GameObject HighScore;
+    [SerializeField]
+    private TextMeshProUGUI HighScoreText;
+    [SerializeField]
+    private TextMeshProUGUI EndScore;
+    
+    private void Start()
+    {
+        HighScoreText.text = PlayerPrefs.GetInt("HighScore").ToString();            //Get HighScore from PlayerPrefs 
+    }
+                                                                                    //Button's functionality
     public void StartGameButton()
     {
+        Time.timeScale = 1;
         SceneManager.LoadScene("Game Scene", LoadSceneMode.Single);
     }
 
@@ -20,6 +32,11 @@ public class Menu : MonoBehaviour
 
     public void ShowTopScoreButton()
     {
+        HighScore.SetActive(true);
+    }
 
+    public void HideTopScoreButton()
+    {
+        HighScore.SetActive(false);
     }
 }

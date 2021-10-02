@@ -10,6 +10,9 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI Score;
 
+    [SerializeField]
+    private TextMeshProUGUI Streak;
+
     private void Awake()
     {
         instance = this;
@@ -17,6 +20,11 @@ public class UIManager : MonoBehaviour
 
     public void UpdateScore()
     {
-        Score.text = Snake.instance.Score.ToString();
+        Streak.text = LevelGrid.instance.Multiplier.ToString();
+        Score.text = Snake.instance.Score.ToString();                                           //Show Current Score
+        if(Snake.instance.Score > PlayerPrefs.GetInt("HighScore", 0))                           //Save High Score to PlayerPrefs
+        {
+            PlayerPrefs.SetInt("HighScore", Snake.instance.Score);
+        }
     }
 }

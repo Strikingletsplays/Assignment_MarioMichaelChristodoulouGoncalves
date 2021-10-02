@@ -4,21 +4,18 @@ using UnityEngine;
 
 public class GameAsset : MonoBehaviour
 {
-    //Static Instance
-    public static GameAsset instance;
+    public static GameAsset instance;                           //Static Instance
 
     private void Awake()
     {
         instance = this;
     }
-
-    //Snake Parts
+                                                                //Snake Parts
     public Sprite snakeHeadSprite;
-    public Sprite snakeBodySprite;
+    public Sprite snakeBodySprite;           
 
-    //Food Sprite
-    public Sprite foodSprite;
+    public Sprite foodSprite;                                   //Food Sprite
 
 
-    
+
 }

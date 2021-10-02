@@ -2,48 +2,58 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LevelGrid
+public class LevelGrid : MonoBehaviour
 {
-    //LevelGrid Static Instance
-    public static LevelGrid instance;
+    public static LevelGrid instance;                                                                       //LevelGrid Static Instance
 
-    //position to instantiate food obj
-    private Vector2Int foodGridPosition;
+    private Vector2Int foodGridPosition;                                                                    //Position and temp chosen foodObject
     private GameObject foodGameObject;
 
-    //Board dimensions to instantiate food in
-    private int width;
+    private int width;                                                                                      //Board dimensions to instantiate food
     private int height;
 
+    public bool FoodObjIsSpawned;                                                                           //Variable to check if Food is spawned
 
-    //Constructor
-    public LevelGrid(int width, int height) 
+    string LastsFoodEaten = "";                                                                             //Keep track of witch Food type was last eaten
+    public int Multiplier = 1;                                                                              //Multiplier of food streak
+
+    public LevelGrid(int width, int height)                                                                 //Constructor
     {
+        FoodObjIsSpawned = false;
         this.width = width;
         this.height = height;
-        SpawnFood();
     }
 
-    private void SpawnFood() {
-        //Check if food did not spawn on snake, if not spawn food, if yes re roll dise!
-        do 
+   
+    public void SpawnFood(int number)                                                                       //Function to spawn random type of food
+    {
+        do                                                                                                  //Check if food possition is on snake, if not spawn food, if yes re roll dise!
         {
             foodGridPosition = new Vector2Int(Random.Range(1, width), Random.Range(1, height));
         } while (Snake.instance.GetSnakeGridPositionList().IndexOf(foodGridPosition) != -1);
 
-        foodGameObject = new GameObject("Food", typeof(SpriteRenderer));
-        foodGameObject.GetComponent<SpriteRenderer>().sprite = GameAsset.instance.foodSprite;
+        foodGameObject = SpawnObjFood.instance.SpawnFoodObjs(number);
         foodGameObject.transform.position = new Vector3(foodGridPosition.x, foodGridPosition.y);
     }
 
     public bool DidSnakeEatFood(Vector2Int snakeGridPosition) {
-        //check snake position if on food obj
-        if (snakeGridPosition == foodGridPosition) 
+        if (snakeGridPosition == foodGridPosition)                                                          //check snake position if on food obj
         {
+            if (LastsFoodEaten == foodGameObject.GetComponent<FoodStats>().name)                            //Check is Streak Begins
+            {
+                Multiplier++;
+                Snake.instance.Score += Multiplier * foodGameObject.GetComponent<FoodStats>().Points;
+            }
+            else                                                                                            //Streak ended :(
+            {
+                Multiplier = 1;
+                Snake.instance.Score += foodGameObject.GetComponent<FoodStats>().Points;
+            }
+            LastsFoodEaten = foodGameObject.GetComponent<FoodStats>().name;
             Object.Destroy(foodGameObject);
-            Snake.instance.Score++;
             UIManager.instance.UpdateScore();
-            SpawnFood();
+            FoodObjIsSpawned = false;
+            SpawnFood(Random.Range(0, 10));
             return true;
         } 
         else 
@@ -52,4 +62,13 @@ public class LevelGrid
         }
     }
 
+    public void CheckBorders(Vector2Int gridPosition)
+    {
+        if(gridPosition.x < 1 || gridPosition.y < 1 || gridPosition.x > width || gridPosition.y > height)
+        {
+            Time.timeScale = 0;                                                                             //Freeze timescale
+            EndScore.instance.EnableEndCanvas();                                                            //Enable Death UI
+            EndScore.instance.ShowEndScore();                                                               //Update EndScore
+        }
+    }
 }
