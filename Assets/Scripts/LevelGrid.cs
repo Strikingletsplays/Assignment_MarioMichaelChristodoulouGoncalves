@@ -6,10 +6,10 @@ public class LevelGrid : MonoBehaviour
 {
     public static LevelGrid instance;                                                                       //LevelGrid Static Instance
 
-    private Vector2Int foodGridPosition;                                                                    //Position and temp chosen foodObject
-    private GameObject foodGameObject;
+    private Vector2Int foodGridPosition;                                                                    //Position of chosen foodObject
+    private GameObject foodGameObject;                                                                      //Chosen foodObject
 
-    private int width;                                                                                      //Board dimensions to instantiate food
+    private int width;                                                                                      //Board dimensions
     private int height;
 
     public bool FoodObjIsSpawned;                                                                           //Variable to check if Food is spawned

@@ -193,7 +193,7 @@ public class Snake : MonoBehaviour
             transform.position = new Vector3(snakeMovePosition.GetGridPosition().x, snakeMovePosition.GetGridPosition().y);
         }
     }
-    public class SnakeMovePosition                                                                            //Keeps track of all mAtributes of snake
+    public class SnakeMovePosition                                                                            //Keeps track of all Atributes of snake
     {
         private SnakeMovePosition previousSnakeMovePosition;
         private Vector2Int gridPosition;
