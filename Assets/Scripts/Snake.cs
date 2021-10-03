@@ -33,7 +33,7 @@ public class Snake : MonoBehaviour
         gridMoveTimer = gridMoveTimerMax;                                                                   //Set gridMoveTimer to the max value
         gridMoveDirection = Direction.Up;                                                                   //Snake Start pointing Direction
 
-        snakeMovePositionList = new List<SnakeMovePosition>();
+        snakeMovePositionList = new List<SnakeMovePosition>();                                              //A list of all position the snake has moved
         snakeBodyPartList = new List<SnakeBodyPart>();
         snakeBodySize = 0;
     }
@@ -107,7 +107,7 @@ public class Snake : MonoBehaviour
             }
             gridPosition += gridMoveDirectionVector;
 
-            LevelGrid.instance.CheckBorders(gridPosition);
+            LevelGrid.instance.CheckBorders(gridPosition);                                                  //Check if snake is out of borders
 
             bool snakeAteFood = LevelGrid.instance.DidSnakeEatFood(gridPosition);                           //Find out if snake ate food
             if (snakeAteFood)
@@ -116,7 +116,7 @@ public class Snake : MonoBehaviour
                 CreateSnakeBody();
             }
 
-            if (snakeMovePositionList.Count >= snakeBodySize + 1)                                           //remove tail snake part from the list
+            if (snakeMovePositionList.Count >= snakeBodySize + 1)                                           //remove tail snake position from the list
             {
                 snakeMovePositionList.RemoveAt(snakeMovePositionList.Count - 1);
             }
@@ -141,7 +141,7 @@ public class Snake : MonoBehaviour
         }
     }
 
-    private float GetAngleFromVector(Vector2Int dir)                                                        //Rotate Snake Head
+    private float GetAngleFromVector(Vector2Int dir)                                                        //Calculate angles from vector
     {
         float n = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
         if (n < 0)
@@ -162,7 +162,7 @@ public class Snake : MonoBehaviour
         return gridPositionList;
     }
 
-    public bool DidSnakeDie()                                                                               //Check if snake is dead
+    public bool DidSnakeDie()                                                                               //Check if snake ate it self
     {
         foreach(var obj in snakeMovePositionList)
         {
